@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Company, Asset, TreeNode } from "@/app/types/types";
-import {
-  getLocations,
-  getAssets,
-} from "@/app/services/locationAndAssetService";
+import { getDataFromApi } from "@/app/utils/apiUtils";
 import { Header } from "../Header";
 import { AssetView } from "./AssetView";
 import { buildTree, filterTree } from "@/app/utils/treeUtils";
 import { Tree } from "@/components/Tree";
-
 
 interface Props {
   data: Company[];
@@ -37,22 +33,22 @@ export function Visualizer({ data }: Props) {
 
   const [currentAsset, setCurrentAsset] = useState<Asset | null>(null);
 
-  const [energyTree, setEnergyTree] = useState<TreeNode[]>([]);
+  const [filteredTreeData, setFilteredTreeData] = useState<TreeNode[]>([]);
 
   async function handleButtonClick(company: Company) {
-    if(currentCompany == company) {
-      return
+    if (currentCompany == company) {
+      return;
     }
     try {
       setLoading(true);
       setCurrentAsset(null);
       const [locations, assets] = await Promise.all([
-        getLocations(company.id),
-        getAssets(company.id),
+        getDataFromApi(company.id, "locations"),
+        getDataFromApi(company.id, "assets"),
       ]);
       const tree = buildTree(locations, assets);
       setTreeData(tree);
-      console.log(tree)
+      console.log(tree);
       setCurrentCompany(company);
     } catch (error) {
       console.error("Error fetching data", error);
@@ -61,20 +57,18 @@ export function Visualizer({ data }: Props) {
     }
   }
 
-  
   const handleAssetSelect = (asset: Asset | null) => {
     setCurrentAsset(asset);
   };
 
   function onFilter(tree: TreeNode[], buttonKey: string, active: boolean) {
-    let filtered = [...treeData];
-    if(active) {
-      const filteredTree = filterTree(tree, buttonKey);
-      setEnergyTree(treeData)
+    const filteredTree = filterTree(tree, buttonKey);
+    if (active && filteredTree) {
+      setFilteredTreeData(treeData);
       setTreeData((tree) => (tree = filteredTree));
       return;
     }
-    setTreeData((tree) => (tree = energyTree));
+    setTreeData((tree) => (tree = filteredTreeData));
   }
 
   return (
@@ -88,6 +82,7 @@ export function Visualizer({ data }: Props) {
       <div className="grid grid-cols-[3fr_5fr] ">
         <Tree
           data={treeData}
+          filteredTreeData={filteredTreeData}
           currentCompany={currentCompany}
           onSelectAsset={handleAssetSelect}
           currentAsset={currentAsset}

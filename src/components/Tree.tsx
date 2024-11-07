@@ -4,6 +4,7 @@ import { useState, useEffect, act } from "react";
 
 interface Props {
   data: TreeNode[];
+  filteredTreeData: TreeNode[];
   currentCompany: Company;
   onSelectAsset: (asset: Asset | null) => void;
   onFilter: (tree: TreeNode[], buttonKey: string, active: boolean) => void;
@@ -12,6 +13,7 @@ interface Props {
 
 export function Tree({
   data,
+  filteredTreeData,
   currentCompany,
   onSelectAsset,
   currentAsset,
@@ -88,14 +90,21 @@ export function Tree({
           </>
         )}
         <ul>
-          {data.map((node, index) => (
+          {filteredTreeData.length > 0 ? (data.map((node, index) => (
             <TreeNodeComponent
               key={index}
               node={node}
               onSelectAsset={onSelectAsset}
               currentAsset={currentAsset}
             />
-          ))}
+          ))) : (filteredTreeData?.map((node, index) => (
+            <TreeNodeComponent
+              key={index}
+              node={node}
+              onSelectAsset={onSelectAsset}
+              currentAsset={currentAsset}
+            />
+          )))}
         </ul>
       </div>
     </div>

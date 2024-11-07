@@ -52,17 +52,14 @@ export const buildTree = (
 
 export function filterTreeByEnergyAssets(tree: TreeNode[]): TreeNode[] {
   return tree.reduce<TreeNode[]>((acc, node) => {
-    // Check if the current node is an asset node with sensorType "energy"
     const hasEnergyAsset = !!(node.asset && node.asset.sensorType === "energy");
 
-    // Recursively filter children
     const filteredChildren = filterTreeByEnergyAssets(node.children);
 
-    // If the current node has an energy asset or any child has one, include it in the result
     if (hasEnergyAsset || filteredChildren.length > 0) {
       acc.push({
         ...node,
-        children: filteredChildren, // Include the filtered children
+        children: filteredChildren,
       });
     }
 
@@ -75,17 +72,14 @@ export function filterAssetsByStatus(nodes: TreeNode[]): TreeNode[] {
     const asset = node.asset;
     const children = node.children;
 
-    // Check if the asset status is 'alert'
     const isAlert = asset && asset.status === "alert";
 
-    // Recursively filter children
     const filteredChildren = filterAssetsByStatus(children);
 
-    // Only keep the node if it has an alert asset or any alert children
     if (isAlert || filteredChildren.length > 0) {
       acc.push({
         ...node,
-        children: filteredChildren, // Include only filtered children
+        children: filteredChildren,
       });
     }
 
@@ -93,22 +87,22 @@ export function filterAssetsByStatus(nodes: TreeNode[]): TreeNode[] {
   }, []);
 }
 
-export function filterTree(tree: TreeNode[], filterType: string): TreeNode[] {
+export function filterTree(
+  tree: TreeNode[],
+  filterType: string
+): TreeNode[] | undefined {
   if (filterType === "energy") {
     return tree.reduce<TreeNode[]>((acc: TreeNode[], node: TreeNode) => {
-      // Check if the current node is an asset node with sensorType "energy"
       const hasEnergyAsset = !!(
         node.asset && node.asset.sensorType === "energy"
       );
 
-      // Recursively filter children
       const filteredChildren = filterTreeByEnergyAssets(node.children);
 
-      // If the current node has an energy asset or any child has one, include it in the result
       if (hasEnergyAsset || filteredChildren.length > 0) {
         acc.push({
           ...node,
-          children: filteredChildren, // Include the filtered children
+          children: filteredChildren,
         });
       }
 
@@ -119,17 +113,14 @@ export function filterTree(tree: TreeNode[], filterType: string): TreeNode[] {
       const asset = node.asset;
       const children = node.children;
 
-      // Check if the asset status is 'alert'
       const isAlert = asset && asset.status === "alert";
 
-      // Recursively filter children
       const filteredChildren = filterAssetsByStatus(children);
 
-      // Only keep the node if it has an alert asset or any alert children
       if (isAlert || filteredChildren.length > 0) {
         acc.push({
           ...node,
-          children: filteredChildren, // Include only filtered children
+          children: filteredChildren,
         });
       }
 
