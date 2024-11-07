@@ -90,21 +90,14 @@ export function Tree({
           </>
         )}
         <ul>
-          {filteredTreeData.length > 0 ? (data.map((node, index) => (
+          {data.map((node, index) => (
             <TreeNodeComponent
               key={index}
               node={node}
               onSelectAsset={onSelectAsset}
               currentAsset={currentAsset}
             />
-          ))) : (filteredTreeData?.map((node, index) => (
-            <TreeNodeComponent
-              key={index}
-              node={node}
-              onSelectAsset={onSelectAsset}
-              currentAsset={currentAsset}
-            />
-          )))}
+          ))}
         </ul>
       </div>
     </div>

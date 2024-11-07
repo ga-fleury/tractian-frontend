@@ -48,7 +48,6 @@ export function Visualizer({ data }: Props) {
       ]);
       const tree = buildTree(locations, assets);
       setTreeData(tree);
-      console.log(tree);
       setCurrentCompany(company);
     } catch (error) {
       console.error("Error fetching data", error);

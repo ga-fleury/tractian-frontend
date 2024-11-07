@@ -1,6 +1,6 @@
 import { Company, Asset } from "../types/types";
 
-export const API_URL: string = "https://fake-api.tractian.com/companies/";
+export const API_URL: string = "https://fake-api.tractian.com/companies";
 
 export async function getCompanies(url: string): Promise<Company[]> {
   const res = await fetch(url, {
