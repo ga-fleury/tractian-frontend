@@ -21,8 +21,8 @@ export function ViewerHeader({ currentCompany, onFilterClick }: Props) {
   }, [currentCompany]);
 
   useEffect(() => {
-    onFilterClick(filterButtonStates)
-  }, [filterButtonStates])
+    onFilterClick(filterButtonStates);
+  }, [filterButtonStates]);
 
   const handleFilterClick = (buttonKey: string) => {
     setFilterButtonStates((prevStates) => {
@@ -65,22 +65,43 @@ export function ViewerHeader({ currentCompany, onFilterClick }: Props) {
           onClick={() => handleFilterClick("energy")}
           style={{
             backgroundColor: filterButtonStates.energy ? "#2188ff" : "white",
-            color: filterButtonStates.energy ? "white" : "black",
-            border: filterButtonStates.energy ? "2px solid #2188ff" : "2px solid gray",
+            color: filterButtonStates.energy ? "white" : "gray",
+            border: filterButtonStates.energy
+              ? "2px solid #2188ff"
+              : "2px solid gray",
           }}
-          className="p-1 border-gray-400 border-2 rounded-[5px] px-6"
+          className="p-1 border-gray-400 border-2 rounded-[5px] px-6 font-bold flex pl-3"
         >
+          <img
+            src={
+              filterButtonStates.energy
+                ? "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/flash_on_24dp_FFF.svg"
+                : "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/flash_on_24dp_2188FF.svg"
+            }
+            alt=""
+          />
           Sensor de Energia
         </button>
         <button
           onClick={() => handleFilterClick("critical")}
           style={{
             backgroundColor: filterButtonStates.critical ? "#2188ff" : "white",
-            color: filterButtonStates.critical ? "white" : "black",
-            border: filterButtonStates.critical ? "2px solid #2188ff" : "2px solid gray",
+            color: filterButtonStates.critical ? "white" : "gray",
+            border: filterButtonStates.critical
+              ? "2px solid #2188ff"
+              : "2px solid gray",
           }}
-          className="p-1 border-gray-400 border-2 rounded-[5px] px-6"
+          className="p-1 border-gray-400 border-2 rounded-[5px] px-6 font-bold flex pl-3"
         >
+          <img
+            src={
+              filterButtonStates.critical
+                ? "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/alert-circle-white.svg"
+                : "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/alert-circle.svg"
+            }
+            alt=""
+            className="mr-2"
+          />
           Crítico
         </button>
       </div>

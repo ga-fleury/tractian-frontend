@@ -77,28 +77,35 @@ export function Visualizer({ data }: Props) {
     setCurrentAsset(asset);
   };
 
-
   function onFilter(filterButtonStates: { [key: string]: boolean }) {
-    if (!filterButtonStates.energy && !filterButtonStates.critical) {
+    if (Object.values(filterButtonStates).every((val) => val === false)) {
       setTreeData(unfilteredTreeData);
-    } else if (
+      return;
+    }
+
+    if (
+      Object.values(filterButtonStates).every((val) => val === true) &&
+      bothFiltersTree
+    ) {
+      setTreeData(bothFiltersTree);
+      return;
+    }
+
+    if (
       !filterButtonStates.energy &&
       filterButtonStates.critical &&
       criticalFilteredTree
     ) {
       setTreeData(criticalFilteredTree);
-    } else if (
+      return;
+    }
+    if (
       filterButtonStates.energy &&
       !filterButtonStates.critical &&
       energyFilteredTree
     ) {
       setTreeData(energyFilteredTree);
-    } else if (
-      filterButtonStates.energy &&
-      filterButtonStates.critical &&
-      bothFiltersTree
-    ) {
-      setTreeData(bothFiltersTree);
+      return;
     }
   }
 
@@ -111,7 +118,10 @@ export function Visualizer({ data }: Props) {
       />
       {loading ? <Loader /> : <></>}
       <div className="w-full h-[50px] flex place-content-between items-center px-6 my-4">
-        <ViewerHeader currentCompany={currentCompany} onFilterClick={onFilter} />
+        <ViewerHeader
+          currentCompany={currentCompany}
+          onFilterClick={onFilter}
+        />
       </div>
       <div className="grid grid-cols-[3fr_5fr]">
         <Tree
