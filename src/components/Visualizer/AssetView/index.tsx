@@ -51,7 +51,7 @@ export function AssetView({ currentAsset, currentCompany }: Props) {
 
   return (
     <div className="bg-slate-200 pt-2 pb-2 pr-2">
-      <div className="w-[100%] h-[calc(100vh-70px)] box-border bg-white text-black p-4 border-gray-800 overflow-y-auto">
+      <div className="w-[100%] h-[calc(100vh-150px)] box-border bg-white text-black p-4 border-gray-800 overflow-y-auto">
         <div className="flex flex-col">
           <div className="flex gap-4 items-center border-gray-200 border-b-2 p-5 pl-0">
             <h1 className="text-2xl">{currentAsset?.name}</h1>

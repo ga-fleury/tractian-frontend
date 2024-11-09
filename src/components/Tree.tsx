@@ -20,6 +20,7 @@ export function Tree({ data, onSelectAsset, currentAsset }: Props) {
 
     function handleSearch(filteredTree: TreeNode[]) {
         setFilteredData(filteredTree)
+        onSelectAsset(null)
     }
 
   return (

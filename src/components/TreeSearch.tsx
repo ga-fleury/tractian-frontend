@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { TreeNode } from "@/app/types/types";
 
 interface Props {
@@ -6,9 +6,15 @@ interface Props {
   onChange: (filteredTree: TreeNode[]) => void;
 }
 
+// TODO - search doesn't work with pasted values, also doesn't go back to empty 
+
 export function TreeSearch({ data, onChange }: Props) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TreeNode[]>(data);
+
+  useEffect(() => {
+    onChange(filteredData);
+  }, [filteredData])
 
   const filterTree = useCallback(
     (nodes: TreeNode[], term: string): TreeNode[] => {
@@ -38,10 +44,13 @@ export function TreeSearch({ data, onChange }: Props) {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
-    console.log(term);
-    setSearchTerm(term);
+    setSearchTerm(() => term);
+    if (term == "") {
+      setFilteredData(() => data)
+      onChange(data)
+      return
+    } 
     setFilteredData(() => filterTree(data, term));
-    onChange(filteredData);
   };
 
   return (
