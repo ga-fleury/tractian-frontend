@@ -88,11 +88,11 @@ export function filterAssetsByStatus(nodes: TreeNode[]): TreeNode[] {
 }
 
 export function filterTree(
-  tree: TreeNode[],
+  tree: TreeNode[] | undefined,
   filterType: string
 ): TreeNode[] | undefined {
   if (filterType === "energy") {
-    return tree.reduce<TreeNode[]>((acc: TreeNode[], node: TreeNode) => {
+    return tree?.reduce<TreeNode[]>((acc: TreeNode[], node: TreeNode) => {
       const hasEnergyAsset = !!(
         node.asset && node.asset.sensorType === "energy"
       );
@@ -109,7 +109,7 @@ export function filterTree(
       return acc;
     }, []);
   } else if (filterType === "critical") {
-    return tree.reduce((acc: TreeNode[], node: TreeNode) => {
+    return tree?.reduce((acc: TreeNode[], node: TreeNode) => {
       const asset = node.asset;
       const children = node.children;
 

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Company, Asset, TreeNode } from "@/app/types/types";
 import { getDataFromApi } from "@/app/utils/apiUtils";
 import { Header } from "../Header";
+import { ViewerHeader } from "./ViewerHeader";
 import { AssetView } from "./AssetView";
 import { buildTree, filterTree } from "@/app/utils/treeUtils";
 import { Tree } from "@/components/Tree";
@@ -33,7 +34,21 @@ export function Visualizer({ data }: Props) {
 
   const [currentAsset, setCurrentAsset] = useState<Asset | null>(null);
 
-  const [filteredTreeData, setFilteredTreeData] = useState<TreeNode[]>([]);
+  const [unfilteredTreeData, setUnfilteredTreeData] = useState<TreeNode[]>([]);
+
+  const energyFilteredTree = useMemo(
+    () => filterTree(treeData, "energy"),
+    [unfilteredTreeData]
+  );
+
+  const criticalFilteredTree = useMemo(
+    () => filterTree(treeData, "critical"),
+    [unfilteredTreeData]
+  );
+
+  const bothFiltersTree = useMemo(() => {
+    return filterTree(filterTree(treeData, "critical"), "energy");
+  }, [unfilteredTreeData]);
 
   async function handleButtonClick(company: Company) {
     if (currentCompany == company) {
@@ -48,6 +63,8 @@ export function Visualizer({ data }: Props) {
       ]);
       const tree = buildTree(locations, assets);
       setTreeData(tree);
+      setUnfilteredTreeData(tree);
+      console.log(tree);
       setCurrentCompany(company);
     } catch (error) {
       console.error("Error fetching data", error);
@@ -60,14 +77,29 @@ export function Visualizer({ data }: Props) {
     setCurrentAsset(asset);
   };
 
-  function onFilter(tree: TreeNode[], buttonKey: string, active: boolean) {
-    const filteredTree = filterTree(tree, buttonKey);
-    if (active && filteredTree) {
-      setFilteredTreeData(treeData);
-      setTreeData((tree) => (tree = filteredTree));
-      return;
+
+  function onFilter(filterButtonStates: { [key: string]: boolean }) {
+    if (!filterButtonStates.energy && !filterButtonStates.critical) {
+      setTreeData(unfilteredTreeData);
+    } else if (
+      !filterButtonStates.energy &&
+      filterButtonStates.critical &&
+      criticalFilteredTree
+    ) {
+      setTreeData(criticalFilteredTree);
+    } else if (
+      filterButtonStates.energy &&
+      !filterButtonStates.critical &&
+      energyFilteredTree
+    ) {
+      setTreeData(energyFilteredTree);
+    } else if (
+      filterButtonStates.energy &&
+      filterButtonStates.critical &&
+      bothFiltersTree
+    ) {
+      setTreeData(bothFiltersTree);
     }
-    setTreeData((tree) => (tree = filteredTreeData));
   }
 
   return (
@@ -78,14 +110,15 @@ export function Visualizer({ data }: Props) {
         onButtonClick={handleButtonClick}
       />
       {loading ? <Loader /> : <></>}
-      <div className="grid grid-cols-[3fr_5fr] ">
+      <div className="w-full h-[50px] flex place-content-between items-center px-6 my-4">
+        <ViewerHeader currentCompany={currentCompany} onFilterClick={onFilter} />
+      </div>
+      <div className="grid grid-cols-[3fr_5fr]">
         <Tree
           data={treeData}
-          filteredTreeData={filteredTreeData}
           currentCompany={currentCompany}
           onSelectAsset={handleAssetSelect}
           currentAsset={currentAsset}
-          onFilter={onFilter}
         />
         <AssetView
           currentAsset={currentAsset}

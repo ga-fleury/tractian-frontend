@@ -1,96 +1,36 @@
 import { TreeNodeComponent } from "./TreeNode";
 import { TreeNode, Company, Asset } from "@/app/types/types";
-import { useState, useEffect, act } from "react";
+import { TreeSearch } from "./TreeSearch";
+import { useEffect, useState } from "react";
 
 interface Props {
   data: TreeNode[];
-  filteredTreeData: TreeNode[];
   currentCompany: Company;
   onSelectAsset: (asset: Asset | null) => void;
-  onFilter: (tree: TreeNode[], buttonKey: string, active: boolean) => void;
   currentAsset: Asset | null;
 }
 
-export function Tree({
-  data,
-  filteredTreeData,
-  currentCompany,
-  onSelectAsset,
-  currentAsset,
-  onFilter,
-}: Props) {
-  const initialStates = {
-    energy: false,
-    critical: false,
-  };
+export function Tree({ data, onSelectAsset, currentAsset }: Props) {
 
-  const [activeStates, setActiveStates] = useState<{ [key: string]: boolean }>(
-    initialStates
-  );
+    useEffect(() => {
+        setFilteredData(data)
+    }, [data])
 
-  useEffect(() => {
-    setActiveStates(
-      Object.keys(initialStates).reduce((acc, key) => {
-        acc[key] = false;
-        return acc;
-      }, {} as { [key: string]: boolean })
-    );
-  }, [currentCompany]);
+    const [filteredData, setFilteredData] = useState<TreeNode[]>(data);
 
-  const handleFilterClick = (buttonKey: string) => {
-    onFilter(data, buttonKey, !activeStates[buttonKey]);
-    setActiveStates((prevStates) => ({
-      ...prevStates,
-      [buttonKey]: !prevStates[buttonKey], // Toggle active state for the specific button
-    }));
-  };
+    function handleSearch(filteredTree: TreeNode[]) {
+        setFilteredData(filteredTree)
+    }
 
   return (
     <div className="bg-slate-200 p-2">
-      <div className="w-[100%] h-[calc(100vh-70px)] box-border bg-white text-black p-4 border-gray-800 overflow-y-auto">
-        {data.length === 0 ? (
-          <div></div>
-        ) : (
-          <>
-            <div className="flex place-content-between">
-              <h1 className="text-2xl">
-                Ativos{" "}
-                <span className="text-lg text-gray-400">
-                  / {currentCompany.name}
-                </span>
-              </h1>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => handleFilterClick("energy")}
-                  style={{
-                    backgroundColor: activeStates.energy ? "#2188ff" : "white",
-                    color: activeStates.energy ? "white" : "black",
-                    border: activeStates.energy ? "none" : "2px solid gray",
-                  }}
-                  className="p-1 border-gray-400 border-2 rounded-[5px] px-6"
-                >
-                  Sensor de Energia
-                </button>
-                <button
-                  onClick={() => handleFilterClick("critical")}
-                  style={{
-                    backgroundColor: activeStates.critical
-                      ? "#2188ff"
-                      : "white",
-                    color: activeStates.critical ? "white" : "black",
-                    border: activeStates.critical ? "none" : "2px solid gray",
-                  }}
-                  className="p-1 border-gray-400 border-2 rounded-[5px] px-6"
-                >
-                  Crítico
-                </button>
-              </div>
-            </div>
-            <input type="text" name="" id="" placeholder="text" />
-          </>
-        )}
-        <ul>
-          {data.map((node, index) => (
+      <div className="w-[100%] h-[calc(100vh-150px)] box-border bg-white text-black border-gray-800 overflow-y-auto">
+        <div className="h-[50px] border-2 border-gray mb-4 flex items-center">
+            <TreeSearch data={data} onChange={handleSearch}/>
+        </div>
+
+        <ul className="px-6">
+          {filteredData.map((node, index) => (
             <TreeNodeComponent
               key={index}
               node={node}
