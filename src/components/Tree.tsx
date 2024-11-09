@@ -10,7 +10,7 @@ interface Props {
   currentAsset: Asset | null;
 }
 
-export function Tree({ data, onSelectAsset, currentAsset }: Props) {
+export function Tree({ data, onSelectAsset, currentAsset, currentCompany }: Props) {
 
     useEffect(() => {
         setFilteredData(data)
@@ -27,9 +27,8 @@ export function Tree({ data, onSelectAsset, currentAsset }: Props) {
     <div className="bg-slate-200 p-2">
       <div className="w-[100%] h-[calc(100vh-150px)] box-border bg-white text-black border-gray-800 overflow-y-auto">
         <div className="h-[50px] border-2 border-gray mb-4 flex items-center">
-            <TreeSearch data={data} onChange={handleSearch}/>
+          {currentCompany.id != '' ? <TreeSearch data={data} onChange={handleSearch}/> : <></>}
         </div>
-
         <ul className="px-6">
           {filteredData.map((node, index) => (
             <TreeNodeComponent
