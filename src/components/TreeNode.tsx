@@ -80,13 +80,6 @@ export function TreeNodeComponent({
             />
             <span>
               {node.asset.name}
-              {/* <span
-                style={{
-                  backgroundColor:
-                    node.asset.status == "operating" ? "green" : "red",
-                }}
-                className="h-[10px] w-[20px] inline-block ml-2"
-              ></span> */}
               <img
                 src={
                   node.asset.status == "operating"
@@ -118,13 +111,21 @@ export function TreeNodeComponent({
             />
             <span>
               {node.asset.name}
-              <span
+              <img
+                src={
+                  node.asset.status == "operating"
+                    ? "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/bolt_24dp_52C41A.svg"
+                    : "https://gist.githubusercontent.com/ga-fleury/ec2c10610daa4b216a7c812fd07ff1b2/raw/07a3ba853dbcecbea1b5706d30092ee7d05d0378/alert-triangle.svg"
+                }
+                alt=""
+                className="inline"
                 style={{
-                  backgroundColor:
-                    node.asset.status == "operating" ? "green" : "red",
+                  width: node.asset.status == "operating" ? "24px" : "16px",
+                  marginLeft: node.asset.status == "operating" ? "4px" : "6px",
+                  marginBottom:
+                    node.asset.status == "operating" ? "0px" : "2px",
                 }}
-                className="h-[10px] w-[20px] inline-block ml-2"
-              ></span>
+              />
             </span>
           </div>
         ) : null}

@@ -1,20 +1,25 @@
 import { useCallback, useState, useEffect } from "react";
-import { TreeNode } from "@/app/types/types";
+import { TreeNode, Company } from "@/app/types/types";
 
 interface Props {
   data: TreeNode[];
   onChange: (filteredTree: TreeNode[]) => void;
+  currentCompany: Company;
 }
 
 // TODO - search doesn't work with pasted values, also doesn't go back to empty 
 
-export function TreeSearch({ data, onChange }: Props) {
+export function TreeSearch({ data, onChange, currentCompany }: Props) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredData, setFilteredData] = useState<TreeNode[]>(data);
 
   useEffect(() => {
     onChange(filteredData);
   }, [filteredData])
+
+  useEffect(() => {
+    setSearchTerm("")
+  }, [currentCompany])
 
   const filterTree = useCallback(
     (nodes: TreeNode[], term: string): TreeNode[] => {
